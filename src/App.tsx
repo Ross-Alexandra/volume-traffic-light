@@ -1,3 +1,5 @@
+import './service/firebase';
+
 import { useEffect, useState } from 'react';
 import { TrafficLight } from './components';
 import { AppWrapper } from './elements';

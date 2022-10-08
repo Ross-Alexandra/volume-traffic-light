@@ -1,5 +1,5 @@
 {
-  "name": "React-Template",
+  "name": "volume-traffic-light",
   "version": "0.1.0",
   "private": true,
   "types": "./src/react-app-env.d.ts",
@@ -23,6 +23,7 @@
     "@types/node": "^16.11.36",
     "@types/react": "^18.0.9",
     "@types/react-dom": "^18.0.4",
+    "firebase": "^9.11.0",
     "lodash": "^4.17.21",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
