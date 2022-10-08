@@ -1,7 +1,2 @@
-# React frontend template
-A GH template for my React front ends. Automatically packages:
- - @ross-alexandra/react-utilities
- - lodash
- - @emotion/styled
-
-This react template uses Typescript, ESlint, & Jest.
+# Volume Traffic Light
+A simple traffic light web app which switches through stages based on the dB levels picked up by the user's mic. Created to help a friend who teaches a highschool class. 
