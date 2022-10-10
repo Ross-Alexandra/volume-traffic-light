@@ -11,6 +11,7 @@ const root = ReactDOM.createRoot(
 root.render(
     <React.StrictMode>
         <App />
-        <ModalPortal />
+        <ModalPortal id='warnings'/>
+        <ModalPortal id='settings'/>
     </React.StrictMode>
 );

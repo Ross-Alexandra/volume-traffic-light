@@ -1,3 +1,4 @@
+import { getPalette } from '../../palette';
 import {LightWrapper} from './elements';
 
 export interface LightProps {
@@ -6,9 +7,9 @@ export interface LightProps {
 }
 
 const lightColorToHex = {
-    'red': '#aa0000',
-    'yellow': '#ffff00',
-    'green': '#00aa00'
+    'red': getPalette('topLightColor'),
+    'yellow': getPalette('middleLightColor'),
+    'green': getPalette('bottomLightColor')
 };
 
 export const Light: React.FC<LightProps> = ({

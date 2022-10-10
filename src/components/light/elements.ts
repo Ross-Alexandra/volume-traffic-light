@@ -10,24 +10,6 @@ export const LightWrapper = styled.div<{
 
     border-radius: 50%;
     border: 3px solid black;
-
-    background-color: #000;
-
-    :after {
-        content: '';
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        inset: 0;
-
-        border-radius: 50%;
-        z-index: 1;
-
-        background-color: ${({color}) => color};
-        ${({active}) => active ? `
-            opacity: 1;
-        ` : `
-            opacity: 0.5;
-        `}
-    }
+    background-color: ${({color}) => color};
+    filter: ${({active}) => active ? 'brightness(1)' : 'brightness(0.5)'};
 `;
