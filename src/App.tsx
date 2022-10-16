@@ -4,11 +4,14 @@ import { useEffect, useState } from 'react';
 import { TrafficLight } from './components';
 import { AppWrapper } from './elements';
 import { setupMic } from './service/volumeService';
-import { Modal, ModalFrame } from './components/modal';
+import { NoSoundsWarning } from './modals';
+import { numberToStringTransformer, stringToIntTransformer, useStorageState } from './hooks/useStorageState';
 
 export function App() {
     const [activeColor, setActiveColor] = useState<LightColor>('red');
     const [showNoMicWawrning, setShowNoMicWarning] = useState(false);
+
+    const [redThreshold, setRedThreshold] = useStorageState('red-threshold', 190, numberToStringTransformer, stringToIntTransformer);
 
     useEffect(() => {
         async function setupMicInterval() {
@@ -40,14 +43,12 @@ export function App() {
     return (
         <AppWrapper>
             <TrafficLight activeColor={activeColor}/>
-            <Modal 
+            <NoSoundsWarning 
                 isOpen={showNoMicWawrning}
-                portalId='warnings'
-            >
-                <ModalFrame handleClose={() => setShowNoMicWarning(false)}>
-                    <p>Drawing some content</p>
-                </ModalFrame>
-            </Modal>
+                handleClose={() => setShowNoMicWarning(false)}
+            />
+            <p>{redThreshold}</p>
+            <button onClick={() => setRedThreshold(redThreshold + 1)}>button</button>
         </AppWrapper>
     );
 }
