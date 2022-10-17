@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { useState, useCallback, createContext, useContext } from 'react';
+import { useState, useCallback, createContext, useContext, useEffect } from 'react';
 
 type stringTransformer<T> = (input: T) => string;
 type valueTransformer<T> = (input: string) => T;
@@ -54,7 +54,6 @@ export const ProvideLocalStorage: React.FC<React.PropsWithChildren> = ({children
         if (!stringValue) return;
 
         const value = getRealValue<T>(stringValue, transformer);
-        setLocalState<T>(key, value);
 
         return value;
     }, []);
@@ -73,7 +72,6 @@ export const ProvideLocalStorage: React.FC<React.PropsWithChildren> = ({children
 };
 
 export function useStorageState<T>(key: string, defaultValue?: T, toString?: stringTransformer<T>, toValue?: valueTransformer<T>) {
-
     // Use the provided key to lookup the value from the context, and 
     // get the setter & loader.
     const {[key]: storedValue, setValue, loadFromLocalStorage} = useContext(LocalStorageContext);
