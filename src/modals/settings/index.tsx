@@ -6,8 +6,11 @@ import { useRedThreshold, useYellowThreshold } from '../../services/settingsServ
 import {
     MenuModal,
     ModalWrapper,
+    SettingWrapper,
     SliderLabel,
-    SliderInput
+    SliderInput,
+    InputWrapper,
+    SliderDescription
 } from './elements';
 import { MAX_VOLUME } from '../../services/volumeService';
 
@@ -34,26 +37,33 @@ export const Settings: React.FC<CustomModalProps> = ({
         >
             <ModalFrame handleClose={handleClose}>
                 <ModalWrapper>
-                    <SliderLabel>Red Light Sensitivity</SliderLabel>
-                    <SliderInput
-                        type='range'
-                        title={`${sliderRedThreshold}%`}
-                        min={0}
-                        max={100}
-                        step={1}
-                        value={sliderRedThreshold}
-                        onChange={e => setThreshold(setRedThreshold, e.target.valueAsNumber)}
-                    />
-                    <SliderLabel>Yellow Light Sensitivity</SliderLabel>
-                    <SliderInput
-                        type='range'
-                        title={`${sliderYellowThreshold}%`}
-                        min={0}
-                        max={100}
-                        value={sliderYellowThreshold}
-                        onChange={e => setThreshold(setYellowThreshold, e.target.valueAsNumber)}
+                    <SettingWrapper>
+                        <SliderLabel>Red Light Cutoff</SliderLabel>
 
-                    />
+                        <SliderInput
+                            type='range'
+                            title={`${sliderRedThreshold}%`}
+                            min={0}
+                            max={100}
+                            step={1}
+                            value={sliderRedThreshold}
+                            onChange={e => setThreshold(setRedThreshold, e.target.valueAsNumber)}
+                        />
+                        <SliderLabel>Yellow Light Cutoff</SliderLabel>
+                        <SliderInput
+                            type='range'
+                            title={`${sliderYellowThreshold}%`}
+                            min={0}
+                            max={100}
+                            value={sliderYellowThreshold}
+                            onChange={e => setThreshold(setYellowThreshold, e.target.valueAsNumber)}
+
+                        />
+                        <InputWrapper>
+                            <SliderDescription>Quieter cutoff</SliderDescription>
+                            <SliderDescription>Louder cutoff</SliderDescription>
+                        </InputWrapper>
+                    </SettingWrapper>
                 </ModalWrapper>
             </ModalFrame>
         </MenuModal>
