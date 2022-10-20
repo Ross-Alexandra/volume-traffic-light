@@ -1,3 +1,5 @@
+export const MAX_VOLUME = 255;
+
 export async function setupMic(onCannotGetMic: () => void) {
     try {
         const micStream = await navigator.mediaDevices.getUserMedia({
@@ -11,8 +13,8 @@ export async function setupMic(onCannotGetMic: () => void) {
         // Set the analyzer values to allow checking the volume.
         const analyzer = audioContext.createAnalyser();
         analyzer.fftSize = 512;
-        analyzer.minDecibels = -100;
-        analyzer.maxDecibels = 0;
+        analyzer.minDecibels = -50;
+        analyzer.maxDecibels = -18;
         analyzer.smoothingTimeConstant = 0.4;
     
         mic.connect(analyzer);

@@ -1,54 +1,84 @@
-import './service/firebase';
+import './services/firebase';
 
 import { useEffect, useState } from 'react';
 import { TrafficLight } from './components';
-import { AppWrapper } from './elements';
-import { setupMic } from './service/volumeService';
+import { AppWrapper, SettingsIcon, SettingsIconWrapper } from './elements';
+import { setupMic } from './services/volumeService';
 import { NoSoundsWarning } from './modals';
-import { numberToStringTransformer, stringToIntTransformer, useStorageState } from './hooks/useStorageState';
+import { Settings } from './modals/settings';
+import { useReadOnlyRedThreshold, useReadOnlyYellowThreshold } from './services/settingsService';
 
 export function App() {
     const [activeColor, setActiveColor] = useState<LightColor>('red');
     const [showNoMicWawrning, setShowNoMicWarning] = useState(false);
+    const [showSettings, setShowSettings] = useState(false);
+    const [getMicVolume, setGetMicVolume] = useState<() => number>();
 
-    const [redThreshold, setRedThreshold] = useStorageState('red-threshold', 190, numberToStringTransformer, stringToIntTransformer);
+    const redThreshold = useReadOnlyRedThreshold();
+    const yellowThreshold = useReadOnlyYellowThreshold();
 
     useEffect(() => {
-        async function setupMicInterval() {
-            const getMicVolume = await setupMic(() => {
+        async function setupMicrophone() {
+            const _getMicVolume = await setupMic(() => {
                 setShowNoMicWarning(true);
             });
-    
-            setInterval(() => {
-                const currentVolume = getMicVolume?.();
-                if (!currentVolume) return;
 
-                if (currentVolume > 190) {
-                    setActiveColor('red');
-                    return;
-                }
-                else if (currentVolume > 150) {
-                    setActiveColor('yellow');
-                    return;
-                }
-                else {
-                    setActiveColor('green');
-                }
-            }, 100);
+            // Return a blank callback here as 
+            // setState(function) is an overload
+            // allowing for setState(currentState => newState).
+            // In this case, ignore the "old" state, 
+            // and always return _getMicVolume.
+            setGetMicVolume(() => _getMicVolume);
         }
 
-        setupMicInterval();
+        setupMicrophone();
     }, []);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            const currentVolume = getMicVolume?.();
+
+            if (!currentVolume) return;
+    
+            if (currentVolume > redThreshold) {
+                setActiveColor('red');
+                return;
+            }
+            else if (currentVolume > yellowThreshold) {
+                setActiveColor('yellow');
+                return;
+            }
+            else {
+                setActiveColor('green');
+            }
+        }, 100);
+
+        return () => {
+            clearInterval(interval);
+        };
+    }, [getMicVolume, redThreshold, yellowThreshold]);
 
     return (
         <AppWrapper>
             <TrafficLight activeColor={activeColor}/>
+
+            <SettingsIconWrapper
+                onClick={() => setShowSettings(true)}
+            >
+                <SettingsIcon />
+            </SettingsIconWrapper>
+
+            {/* Top-level modas here below here */}
             <NoSoundsWarning 
                 isOpen={showNoMicWawrning}
                 handleClose={() => setShowNoMicWarning(false)}
             />
-            <p>{redThreshold}</p>
-            <button onClick={() => setRedThreshold(redThreshold + 1)}>button</button>
+
+            <Settings 
+                isOpen={showSettings}
+                handleClose={() => setShowSettings(false)}
+            />
+
         </AppWrapper>
     );
 }

@@ -19,7 +19,6 @@ export const NoMic: React.FC<NoMicProps> = ({
     width=24
 }) => {
     const iconColors = _.defaults(colors, defaultColors);
-    console.log(iconColors);
 
     return (
         <svg width={width} height={height} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">

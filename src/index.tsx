@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { App } from './App';
 
 import {ModalPortal} from '@ross-alexandra/react-utilities';
-import { ProvideLocalStorage } from './hooks/useStorageState';
+import { ProvideLocalStorage } from './hooks/useStorageState/hooks';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

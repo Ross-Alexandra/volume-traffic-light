@@ -1,4 +1,5 @@
 export * from './mic';
+export * from './settings';
 
 export interface Colors {
     [key: string] : string;

@@ -1,8 +1,5 @@
 import _ from 'lodash';
-import { useState, useCallback, createContext, useContext, useEffect } from 'react';
-
-type stringTransformer<T> = (input: T) => string;
-type valueTransformer<T> = (input: string) => T;
+import { useState, useCallback, createContext, useContext } from 'react';
 
 interface StringMap {
     // Allow any here as the caller could technically store
@@ -55,6 +52,9 @@ export const ProvideLocalStorage: React.FC<React.PropsWithChildren> = ({children
 
         const value = getRealValue<T>(stringValue, transformer);
 
+        // Allow the first render to happen.
+        setTimeout(() => setLocalState<T>(key, value));
+
         return value;
     }, []);
 
@@ -101,10 +101,8 @@ export function useStorageState<T>(key: string, defaultValue?: T, toString?: str
     return [currentValue, stateSetter];
 }
 
-// Some default transformers
-export const objectToStringTransformer= <T,>(value: T) => JSON.stringify(value);
-export const stringToObjectTransformer = (value: string) => JSON.parse(value);
+export function useReadOnlyStorageState<T>(key: string, defaultValue?: T, toValue?: valueTransformer<T>) {
+    const {[key]: storedValue, loadFromLocalStorage} = useContext(LocalStorageContext);
 
-export const numberToStringTransformer = (value: number) => value + '';
-export const stringToIntTransformer = (value: string) => Number.parseInt(value);
-export const stringToFloatTransformer = (value: string) => Number.parseFloat(value);
+    return storedValue ?? loadFromLocalStorage?.(key, toValue) ?? defaultValue;
+}
