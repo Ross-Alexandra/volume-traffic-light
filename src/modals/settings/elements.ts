@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { MenuModal as _MenuModal } from '../../components/modal';
 import { phoneMediaQuery } from '../../components/modal/menu-modal';
+import MultiRangeSlider from 'multi-range-slider-react';
 
 export const MenuModal = styled(_MenuModal)`
     .modal {
@@ -26,7 +27,7 @@ export const SettingWrapper = styled.div`
 
     width: 100%;
     padding: 20px;
-    gap: 20px;
+    gap: 10px;
 
     border-bottom: 1px solid rgba(0, 0, 0, 0.25);
 
@@ -35,45 +36,54 @@ export const SettingWrapper = styled.div`
     }
 `;
 
-export const SliderWrapper = styled.div`
-    display: grid;
-    place-items: center;
-    width: 100%;
-`;
-
 export const SliderLabel = styled.h3``;
-
-export const SliderInput = styled.input`
-    position: relative;
-
-    width: 50%;
-`;
-
-export const SliderHint = styled.p`
-    font-size: 12px;
-    color: rgba(0, 0, 0, .5);
-
-    align-self: end;
-`;
-
-export const InputWrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-`;
-
-export const SliderDescription = styled.p`
-    color: rgba(0, 0, 0, .5);
-    font-size: 12px;
-`;
 
 export const InputWarning = styled.p`
     color: red;
     font-size: 12px;
 `;
 
+export const MicVolumesWrapper = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
+    width: 100%;
+`;
+
 export const VolumeProgress = styled.progress`
     width: 50%;
+`;
+
+export const DescriptionText = styled.p`
+    color: rgba(0, 0, 0, 0.7);
+    font-size: 12px;
+
+    width: 25%;
+    text-align: center;
+`;
+
+export const MultiSlider = styled(MultiRangeSlider)`
+    width: 50%;
+    border: none;
+    box-shadow: unset;
+
+    .caption {
+        left: -3px;
+        bottom: 25px;
+        letter-spacing: .5px;
+    }
+
+    .caption .min-caption, .caption .max-caption {
+        background-color: transparent;
+        color: black;
+        box-shadow: unset;
+    }
+`;
+
+export const CaptionlessMultiSlider = styled(MultiSlider)`
+    .thumb:active .caption {
+        display: none;
+    }
 `;

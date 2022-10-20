@@ -1,17 +1,18 @@
 import {useCallback} from 'react';
-import { useRedThreshold, useYellowThreshold } from '../../services/settingsService';
+import { useMaxMicVolume, useMinMicVolume, useRedThreshold, useYellowThreshold } from '../../services/settingsService';
 import { MAX_VOLUME } from '../../services/volumeService';
+import { ChangeResult } from 'multi-range-slider-react';
 
 import {
     SliderLabel,
-    SliderInput,
-    InputWrapper,
-    SliderDescription,
     InputWarning,
-    SliderWrapper,
-    SliderHint,
-    VolumeProgress
+    MicVolumesWrapper,
+    VolumeProgress,
+    MultiSlider,
+    DescriptionText,
+    CaptionlessMultiSlider
 } from './elements';
+import { getPalette } from '../../palette';
 
 export interface ThresholdSettingsProps {
     micVolume: number;
@@ -22,6 +23,9 @@ export const ThresholdSettings: React.FC<ThresholdSettingsProps> = ({
 }) => {
     const [redThreshold, setRedThreshold] = useRedThreshold();
     const [yellowThreshold, setYellowThreshold] = useYellowThreshold();
+
+    const [minMicVolume, setMinMicVolume] = useMinMicVolume();
+    const [maxMicVolume, setMaxMicVolume] = useMaxMicVolume();
 
     const setThreshold = useCallback((setter: (a: number) => void, targetPercent: number) => {
         const actualPercent = targetPercent * MAX_VOLUME / 100;
@@ -35,41 +39,43 @@ export const ThresholdSettings: React.FC<ThresholdSettingsProps> = ({
     const currentVolumePercent = Math.round(micVolume / MAX_VOLUME * 100);
     return (
         <>
-            <SliderLabel>Red Light Cutoff</SliderLabel>
-            <SliderWrapper>
-                <SliderInput
-                    type='range'
-                    min={0}
-                    max={100}
+            <SliderLabel>Traffic Light Cutoffs</SliderLabel>
+            <CaptionlessMultiSlider
+                min={0}
+                max={100}
+                step={1}
+                minValue={sliderYellowThreshold}
+                maxValue={sliderRedThreshold}
+                label={false}
+                ruler={false}
+                barLeftColor={getPalette('bottomLightColor')}
+                barInnerColor={getPalette('middleLightColor')}
+                barRightColor={getPalette('topLightColor')}
+                onChange={(e: ChangeResult) => {
+                    setThreshold(setRedThreshold, e.maxValue);
+                    setThreshold(setYellowThreshold, e.minValue);
+                }}
+            />
+            <VolumeProgress value={currentVolumePercent} max={100} />
+
+            <SliderLabel>Mic Sensitivity</SliderLabel>
+            <MicVolumesWrapper>
+                <DescriptionText>-80dB <br/> No incoming sound</DescriptionText>
+                <MultiSlider
+                    min={-80}
+                    max={0.1}
                     step={1}
-                    value={sliderRedThreshold}
-                    onChange={e => setThreshold(setRedThreshold, e.target.valueAsNumber)}
+                    minValue={minMicVolume}
+                    maxValue={maxMicVolume}
+                    label={false}
+                    ruler={false}
+                    onChange={(e: ChangeResult) => {
+                        setMinMicVolume(e.minValue);
+                        setMaxMicVolume(e.maxValue);
+                    }}
                 />
-                <SliderHint>
-                    {sliderRedThreshold}%
-                </SliderHint>
-            </SliderWrapper>
-            
-            <SliderLabel>Yellow Light Cutoff</SliderLabel>
-            <SliderWrapper>
-                <SliderInput
-                    type='range'
-                    min={0}
-                    max={100}
-                    value={sliderYellowThreshold}
-                    onChange={e => setThreshold(setYellowThreshold, e.target.valueAsNumber)}
-
-                />
-                <SliderHint>
-                    {sliderYellowThreshold}%
-                </SliderHint>
-            </SliderWrapper>
-
-            <InputWrapper>
-                <SliderDescription>Quieter cutoff</SliderDescription>
-                <VolumeProgress value={currentVolumePercent} max={100} />
-                <SliderDescription>Louder cutoff</SliderDescription>
-            </InputWrapper>
+                <DescriptionText>0dB <br/> Loudest sound mic can hear</DescriptionText>
+            </MicVolumesWrapper>
 
             {(yellowThreshold > redThreshold) && (
                 <InputWarning>

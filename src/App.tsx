@@ -6,7 +6,7 @@ import { AppWrapper, SettingsIcon, SettingsIconWrapper } from './elements';
 import { setupMic } from './services/volumeService';
 import { NoSoundsWarning } from './modals';
 import { Settings } from './modals/settings';
-import { useReadOnlyRedThreshold, useReadOnlyYellowThreshold } from './services/settingsService';
+import { useReadOnlyMaxMicVolume, useReadOnlyMinMicVolume, useReadOnlyRedThreshold, useReadOnlyYellowThreshold } from './services/settingsService';
 import _ from 'lodash';
 
 export function App() {
@@ -19,9 +19,12 @@ export function App() {
     const redThreshold = useReadOnlyRedThreshold();
     const yellowThreshold = useReadOnlyYellowThreshold();
 
+    const minMicVolume = useReadOnlyMinMicVolume();
+    const maxMicVolume = useReadOnlyMaxMicVolume();
+
     useEffect(() => {
         async function setupMicrophone() {
-            const _getMicVolume = await setupMic(() => {
+            const _getMicVolume = await setupMic(minMicVolume, maxMicVolume, () => {
                 setShowNoMicWarning(true);
             });
 
@@ -34,7 +37,7 @@ export function App() {
         }
 
         setupMicrophone();
-    }, []);
+    }, [minMicVolume, maxMicVolume]);
 
     useEffect(() => {
         const interval = setInterval(() => {
