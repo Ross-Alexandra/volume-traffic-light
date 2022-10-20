@@ -13,6 +13,7 @@ export function App() {
     const [showNoMicWawrning, setShowNoMicWarning] = useState(false);
     const [showSettings, setShowSettings] = useState(false);
     const [getMicVolume, setGetMicVolume] = useState<() => number>();
+    const [micVolume, setMicVolume] = useState<number>(0);
 
     const redThreshold = useReadOnlyRedThreshold();
     const yellowThreshold = useReadOnlyYellowThreshold();
@@ -37,26 +38,29 @@ export function App() {
     useEffect(() => {
         const interval = setInterval(() => {
             const currentVolume = getMicVolume?.();
-
             if (!currentVolume) return;
     
-            if (currentVolume > redThreshold) {
-                setActiveColor('red');
-                return;
-            }
-            else if (currentVolume > yellowThreshold) {
-                setActiveColor('yellow');
-                return;
-            }
-            else {
-                setActiveColor('green');
-            }
+            setMicVolume(currentVolume);
         }, 100);
 
         return () => {
             clearInterval(interval);
         };
     }, [getMicVolume, redThreshold, yellowThreshold]);
+
+    useEffect(() => {
+        if (micVolume > redThreshold) {
+            setActiveColor('red');
+            return;
+        }
+        else if (micVolume > yellowThreshold) {
+            setActiveColor('yellow');
+            return;
+        }
+        else {
+            setActiveColor('green');
+        }
+    }, [micVolume]);
 
     return (
         <AppWrapper>
@@ -74,8 +78,9 @@ export function App() {
                 handleClose={() => setShowNoMicWarning(false)}
             />
 
-            <Settings 
+            <Settings
                 isOpen={showSettings}
+                micVolume={micVolume}
                 handleClose={() => setShowSettings(false)}
             />
 

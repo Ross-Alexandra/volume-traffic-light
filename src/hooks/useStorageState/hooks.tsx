@@ -52,7 +52,7 @@ export const ProvideLocalStorage: React.FC<React.PropsWithChildren> = ({children
 
         const value = getRealValue<T>(stringValue, transformer);
 
-        // Allow the first render to happen.
+        // setTimeout to Allow the first render to happen.
         setTimeout(() => setLocalState<T>(key, value));
 
         return value;
@@ -71,7 +71,7 @@ export const ProvideLocalStorage: React.FC<React.PropsWithChildren> = ({children
     );
 };
 
-export function useStorageState<T>(key: string, defaultValue?: T, toString?: stringTransformer<T>, toValue?: valueTransformer<T>) {
+export function useStorageState<T>(key: string, defaultValue: T, toString?: stringTransformer<T>, toValue?: valueTransformer<T>): StorageState<T> {
     // Use the provided key to lookup the value from the context, and 
     // get the setter & loader.
     const {[key]: storedValue, setValue, loadFromLocalStorage} = useContext(LocalStorageContext);
@@ -80,28 +80,25 @@ export function useStorageState<T>(key: string, defaultValue?: T, toString?: str
 
     // If there is no value currently in state, attempt to load one
     // from localStorage.
-    const existingValue = storedValue ?? loadFromLocalStorage?.(key, toValue);
+    const existingValue = storedValue as T ?? loadFromLocalStorage?.<T>(key, toValue);
 
     // If there is no value in local state, then this is a newly registered
     // value.
     const currentValue = existingValue ?? defaultValue;
-
-    // If there is nothing in local state, local storage, and
-    // the value which would be newly registered in undefined,
-    // then ignore then and expose the setter.
-    if (_.isUndefined(currentValue)) return [undefined, stateSetter];
     
-    // If current value is undefined, then default Value
-    // must have been undefined, and the above return would have
-    // been caught.
-    // If existing value is undefined, then this is the first time accessing
-    // it, so we need to set it.
-    if (_.isUndefined(existingValue)) setValue?.<T>(key, defaultValue as T, toString);
+    // If the value from state & localstorage are both undefined,
+    // but the default value is not, then set the default value in
+    // local storage.
+    if (_.isUndefined(existingValue) && !_.isUndefined(defaultValue)) {
+        
+        // setTimeout to Allow the first render to happen.
+        setTimeout(() => setValue?.<T>(key, defaultValue as T, toString));
+    }
 
-    return [currentValue, stateSetter];
+    return [currentValue as T, stateSetter];
 }
 
-export function useReadOnlyStorageState<T>(key: string, defaultValue?: T, toValue?: valueTransformer<T>) {
+export function useReadOnlyStorageState<T>(key: string, defaultValue: T, toValue?: valueTransformer<T>): ReadOnlyStorageState<T> {
     const {[key]: storedValue, loadFromLocalStorage} = useContext(LocalStorageContext);
 
     return storedValue ?? loadFromLocalStorage?.(key, toValue) ?? defaultValue;

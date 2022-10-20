@@ -35,12 +35,25 @@ export const SettingWrapper = styled.div`
     }
 `;
 
+export const SliderWrapper = styled.div`
+    display: grid;
+    place-items: center;
+    width: 100%;
+`;
+
 export const SliderLabel = styled.h3``;
 
 export const SliderInput = styled.input`
-    margin: 0px auto;
+    position: relative;
 
     width: 50%;
+`;
+
+export const SliderHint = styled.p`
+    font-size: 12px;
+    color: rgba(0, 0, 0, .5);
+
+    align-self: end;
 `;
 
 export const InputWrapper = styled.div`
@@ -54,4 +67,13 @@ export const InputWrapper = styled.div`
 export const SliderDescription = styled.p`
     color: rgba(0, 0, 0, .5);
     font-size: 12px;
+`;
+
+export const InputWarning = styled.p`
+    color: red;
+    font-size: 12px;
+`;
+
+export const VolumeProgress = styled.progress`
+    width: 50%;
 `;

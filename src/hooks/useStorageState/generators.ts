@@ -15,21 +15,21 @@ import {
 // generateStorageStateHooks(key, default, toString, toValue)
 // returning them a no-argument hook for each of their state
 // variables.
-export function generateStorageStateHooks<T>(key: string, defaultValue?: T, toString?: stringTransformer<T>, toValue?: valueTransformer<T>) {
-    const readWriteHook = () => useStorageState(key, defaultValue, toString, toValue);
-    const readOnlyHook = () => useReadOnlyStorageState(key, defaultValue, toValue);
+export function generateStorageStateHooks<T>(key: string, defaultValue: T, toString?: stringTransformer<T>, toValue?: valueTransformer<T>): [() => [T, (newValue: T) => void], () => T] {
+    const readWriteHook = () => useStorageState<T>(key, defaultValue, toString, toValue);
+    const readOnlyHook = () => useReadOnlyStorageState<T>(key, defaultValue, toValue);
 
     return [readWriteHook, readOnlyHook];
 }
 
-export function GenerateIntStorageStateHooks(key: string, defaultValue?: number) {
-    return generateStorageStateHooks(key, defaultValue, numberToStringTransformer, stringToIntTransformer);
+export function GenerateIntStorageStateHooks(key: string, defaultValue: number) {
+    return generateStorageStateHooks<number>(key, defaultValue, numberToStringTransformer, stringToIntTransformer);
 }
 
-export function GenerateFloatStorageStateHooks(key: string, defaultvalue?: number) {
-    return generateStorageStateHooks(key, defaultvalue, numberToStringTransformer, stringToFloatTransformer);
+export function GenerateFloatStorageStateHooks(key: string, defaultvalue: number) {
+    return generateStorageStateHooks<number>(key, defaultvalue, numberToStringTransformer, stringToFloatTransformer);
 }
 
-export function GenerateObjectStorageStateHooks<T>(key: string, defaultValue?: T) {
-    return generateStorageStateHooks(key, defaultValue, objectToStringTransformer<T>, stringToObjectTransformer);
+export function GenerateObjectStorageStateHooks<T>(key: string, defaultValue: T) {
+    return generateStorageStateHooks<T>(key, defaultValue, objectToStringTransformer<T>, stringToObjectTransformer);
 }
