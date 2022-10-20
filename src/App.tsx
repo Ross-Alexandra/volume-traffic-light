@@ -7,6 +7,7 @@ import { setupMic } from './services/volumeService';
 import { NoSoundsWarning } from './modals';
 import { Settings } from './modals/settings';
 import { useReadOnlyRedThreshold, useReadOnlyYellowThreshold } from './services/settingsService';
+import _ from 'lodash';
 
 export function App() {
     const [activeColor, setActiveColor] = useState<LightColor>('red');
@@ -38,7 +39,7 @@ export function App() {
     useEffect(() => {
         const interval = setInterval(() => {
             const currentVolume = getMicVolume?.();
-            if (!currentVolume) return;
+            if (_.isUndefined(currentVolume)) return;
     
             setMicVolume(currentVolume);
         }, 100);
